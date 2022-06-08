@@ -3,12 +3,13 @@ import Board from './Board';
 import microbe1 from'../microbe1.png';
 import microbe2 from'../microbe2.png';
 
-const LocalMultPage = () => {
+const OnlineGamePage = () => {
 
   const [activs, setActivs] = useState(new Array(15).fill(true));
   const [toRem, setToRem] = useState(new Array(15).fill(false));
   const [player, setPlayer] = useState("Player 1");
   const [activeGame, setActiveGame] = useState(true);
+  const [computerEndedTurn, setComputerEndedTurn] = useState(false);
 
   const arrayAnd = (a, b) => a.map((k, i) => k && b[i]);
   const inverted = (bools) => bools.map(bool => !bool);
@@ -18,9 +19,23 @@ const LocalMultPage = () => {
       setActiveGame(false);
     }
     else {
-      setPlayer(player == 'Player 1' ? 'Player 2' : 'Player 1');
+      setPlayer(player == 'Player 1' ? 'Computer' : 'Player 1');
     }
   },[activs])
+
+  useEffect(() => {
+    if (player == 'Computer'){
+      // opponentTurn(); 
+      setTimeout(() => opponentTurn(), 2000);
+    }
+  },[player])
+
+  useEffect(() => {
+    if (computerEndedTurn){
+      endTurn();
+      setComputerEndedTurn(false);
+    }
+  },[computerEndedTurn])
 
   const endTurn = () => {
     if (!activeGame){
@@ -41,6 +56,10 @@ const LocalMultPage = () => {
   }
 
   const isValidMove = index => {
+    if (!activs[index]){
+      console.log("Index",index,"is not active")
+      return false;
+    }
     if (index == 0){
       return [...toRem.slice(1)].includes(true) ? false : true;
     } else if (index <= 2) {
@@ -61,10 +80,28 @@ const LocalMultPage = () => {
     setActiveGame(true);
   }
 
+  let queue = []
+
+  const opponentTurn = () => {
+    if (toRem.includes(true)){
+      console.log("something is wrong)")
+    }
+    let i = Math.floor(Math.random() * 100) % 15;
+    let cond = isValidMove(i);
+    while (!cond){
+      console.log("i",i, "cond", cond);
+      i = Math.floor(Math.random() * 100) % 15;
+      cond = isValidMove(i);
+    }
+    console.log("choose to toggle",i)
+    toggleRemovalState(i);
+    setComputerEndedTurn(true);
+  }
+
   return(
     <div className="">
       { activeGame &&
-        <h1 className="text-3xl font-bold text-white font-mono py-16">
+        <h1 className="text-3xl font-bold text-white font-mono py-4">
           {"It's " + player + "'s turn"}
         </h1>
       }
@@ -89,7 +126,7 @@ const LocalMultPage = () => {
           onClick={() => endTurn()}>
           {"Done Playing"}
         </button>
-        <img className='w-72 h-72' src={microbe1}
+        <img className='w-72 h-[9.5rem]' src={microbe1}
         onMouseOver={e => (e.currentTarget.src = microbe2)}
         onMouseOut={e => (e.currentTarget.src = microbe1)}/>
     </div>
@@ -97,4 +134,4 @@ const LocalMultPage = () => {
   );
   }
   
-  export default LocalMultPage;
+  export default OnlineGamePage;

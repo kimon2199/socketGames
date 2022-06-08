@@ -48,9 +48,6 @@ const AiPage = () => {
     }
     setActivs(activs => arrayAnd(activs, inverted(toRem)));
     setToRem(new Array(15).fill(false));
-    console.log("activs:");
-    console.log(activs);
-    console.log(player,"just ended turn");
     return true;
   }
 
@@ -86,16 +83,14 @@ const AiPage = () => {
   let queue = []
 
   const opponentTurn = () => {
-    if (toRem.includes(true)){
-      console.log("something is wrong)")
+    if (!activeGame){
+      return
     }
     let i = Math.floor(Math.random() * 100) % 15;
-    let count = 0;
     let cond = isValidMove(i);
-    while (!cond && count < 10){
-      console.log("i",i,"count",count, "cond", cond);
+    while (!cond){
+      console.log("i",i, "cond", cond);
       i = Math.floor(Math.random() * 100) % 15;
-      count = count + 1;
       cond = isValidMove(i);
     }
     console.log("choose to toggle",i)
