@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
+
+  const zip = (a, b) => a.map((k, i) => [k, b[i]]);
+
   return(
     <div className="bg-contain mx-auto">
       <h1 className="text-3xl font-bold text-white font-mono py-32">
@@ -15,12 +18,12 @@ const HomePage = () => {
             <span className="font-semibold mr-2 text-left flex-auto">Player</span>
           </div>
         </div> */}
-        {["A.I.","Player (Local)","Player (Online)"].map((i) =>
+        {zip(["A.I.","Player (Local)","Player (Online)"],['ai','local','online']).map((i) =>
           <div className="text-center py-4 lg:px-4">
-            <Link className="nav-link" to="/local">
+            <Link className="nav-link" to={"/"+i[1]}>
             <button className="p-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 items-center text-indigo-100 leading-none rounded-full flex inline-flex shadow-2xl" role="alert">
               <span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">VS.</span>
-              <span className="font-semibold mr-2 flex-auto">{i}</span>
+              <span className="font-semibold mr-2 flex-auto">{i[0]}</span>
             </button>
             </Link>
           </div>)}
