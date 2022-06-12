@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Board from './Board';
+import InfoCard from './InfoCard';
 import microbe1 from'../microbe1.png';
 import microbe2 from'../microbe2.png';
 
@@ -116,6 +117,9 @@ const OnlineGamePage = ({ socket, room, playerName, otherPlayer, turn, setTurn, 
           onClick={() => endTurn()}>
           {"Done Playing"}
         </button>}
+        <div className='w-[32rem]'>
+          <InfoCard playerName={playerName} otherPlayer={otherPlayer} room={room}/>
+        </div>
         <img className='w-72 h-[9.5rem]' src={microbe1}
         onMouseOver={e => (e.currentTarget.src = microbe2)}
         onMouseOut={e => (e.currentTarget.src = microbe1)}/>
