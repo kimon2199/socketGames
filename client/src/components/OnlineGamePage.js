@@ -3,11 +3,11 @@ import Board from './Board';
 import microbe1 from'../microbe1.png';
 import microbe2 from'../microbe2.png';
 
-const OnlineGamePage = () => {
+const OnlineGamePage = ({ socket, room, playerName, otherPlayer, turn, setTurn, activs, setActivs }) => {
 
-  const [activs, setActivs] = useState(new Array(15).fill(true));
+  // const [activs, setActivs] = useState(new Array(15).fill(true));
   const [toRem, setToRem] = useState(new Array(15).fill(false));
-  const [player, setPlayer] = useState("Player 1");
+  const [player, setPlayer] = useState(playerName);
   const [activeGame, setActiveGame] = useState(true);
   const [computerEndedTurn, setComputerEndedTurn] = useState(false);
 
@@ -19,23 +19,34 @@ const OnlineGamePage = () => {
       setActiveGame(false);
     }
     else {
-      setPlayer(player == 'Player 1' ? 'Computer' : 'Player 1');
+      setPlayer(player == playerName ? otherPlayer : playerName);
     }
   },[activs])
 
-  useEffect(() => {
-    if (player == 'Computer'){
-      // opponentTurn(); 
-      setTimeout(() => opponentTurn(), 2000);
-    }
-  },[player])
+  // useEffect(() => {
+  //   if (turn) {
+  //     playTurn();
+  //   }
+  //   else {
+  //     waitTurn();
+  //   }
+  // },[player])
 
   useEffect(() => {
-    if (computerEndedTurn){
-      endTurn();
-      setComputerEndedTurn(false);
-    }
-  },[computerEndedTurn])
+    socket.on("move_done", (data) => {
+      setTurn(data.turn);
+      setActivs(data.activs);
+    })
+  },[socket])
+
+  useEffect(() => {
+    socket.on("restart_game", (data) => {
+      setToRem(new Array(15).fill(false));
+      setActiveGame(true);
+      setTurn(data.turn);
+      setActivs(data.activs);
+    })
+  },[socket])
 
   const endTurn = () => {
     if (!activeGame){
@@ -46,7 +57,8 @@ const OnlineGamePage = () => {
       console.log("Remove at least one");
       return false;
     }
-    setActivs(activs => arrayAnd(activs, inverted(toRem)));
+    socket.emit("make_move", { room, toRem: inverted(toRem) });
+    // setActivs(activs => arrayAnd(activs, inverted(toRem)));
     setToRem(new Array(15).fill(false));
     return true;
   }
@@ -75,37 +87,15 @@ const OnlineGamePage = () => {
   }
 
   const resetGame = () => {
-    setActivs(new Array(15).fill(true));
-    setToRem(new Array(15).fill(false));
-    setActiveGame(true);
-  }
-
-  let queue = []
-
-  const opponentTurn = () => {
-    if (toRem.includes(true)){
-      console.log("something is wrong)")
-    }
-    let i = Math.floor(Math.random() * 100) % 15;
-    let cond = isValidMove(i);
-    while (!cond){
-      console.log("i",i, "cond", cond);
-      i = Math.floor(Math.random() * 100) % 15;
-      cond = isValidMove(i);
-    }
-    console.log("choose to toggle",i)
-    toggleRemovalState(i);
-    setComputerEndedTurn(true);
+    socket.emit('restart_game', { room });
   }
 
   return(
     <div className="">
-      { activeGame &&
+      { activeGame ?
         <h1 className="text-3xl font-bold text-white font-mono py-4">
           {"It's " + player + "'s turn"}
-        </h1>
-      }
-      { !activeGame &&
+        </h1> :
         <div>
           <h1 className="text-3xl font-bold text-white font-mono">
             {player + " just lost the game!! :("}
@@ -122,14 +112,14 @@ const OnlineGamePage = () => {
         </div>
       </div>
       <div className="py-6 grid place-items-center">
-        <button className={"text-white font-bold py-2 px-4 border rounded bg-yellow-500"}
+        {turn && <button className={"text-white font-bold py-2 px-4 border rounded bg-yellow-500"}
           onClick={() => endTurn()}>
           {"Done Playing"}
-        </button>
+        </button>}
         <img className='w-72 h-[9.5rem]' src={microbe1}
         onMouseOver={e => (e.currentTarget.src = microbe2)}
         onMouseOut={e => (e.currentTarget.src = microbe1)}/>
-    </div>
+      </div>
     </div>
   );
   }
