@@ -1,21 +1,25 @@
 import { useState } from 'react';
+import microbe1 from'../microbe1.png';
+import microbe2 from'../microbe2.png';
+import microbe3 from'../microbe3.png';
 
-const Blob = (props) => {
+const Blob = ({turn, ...props}) => {
 
-  const blue = ' bg-blue-500 hover:bg-blue-700 active:bg-blue-800 border-blue-800 ';
-  const red = ' bg-red-700 hover:bg-red-800 active:bg-red-900 border-red-900 ';
+  const [clicked, setClicked] = useState(false);
 
-  const [color, setColor] = useState(blue);
-  const [state, setState] = useState('exists');
-
-  const switchColor = () => {
-    if (color.includes('red')){
-      setColor(blue);
+  const switchColor = (e) => {
+    if (!turn) {
+      return;
+    }
+    if (clicked){
+      e.currentTarget.src = microbe1;
+      setClicked(clicked => !clicked)
       props.toggleRemovalState(props.index)
     }
     else {
       if (props.isValidMove(props.index)){
-        setColor(red);
+        e.currentTarget.src = microbe3;
+        setClicked(clicked => !clicked)
         props.toggleRemovalState(props.index)
       }
       else {
@@ -25,10 +29,10 @@ const Blob = (props) => {
   }
 
   return (
-    <button className={"w-full text-white font-bold py-2 px-4 border rounded" + color}
-      onClick={() => switchColor()}>
-      {props.index}
-    </button>
+    <img className='w-24 h-16' src={microbe1}
+    onMouseOver={e => (e.currentTarget.src = clicked ? microbe3 : turn ? microbe2 : microbe1)}
+    onMouseOut={e => (e.currentTarget.src = clicked ? microbe3 : microbe1)}
+    onClick={e => switchColor(e)} alt="Blob"/>
     )
 }
 

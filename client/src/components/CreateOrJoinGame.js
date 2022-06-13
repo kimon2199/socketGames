@@ -23,12 +23,8 @@ const CreateOrJoinGame = ({ socket, setRoom }) => {
 
   useEffect(() => {
     socket.on("receive_created_room", (data) => {
-      console.log(1)
-      console.log(data)
       setRoom(data.room);
-      console.log(2)
       resetRoomJoin();
-      console.log(3)
     })
     return () => socket.off("receive_created_room");
   },[socket])
