@@ -8,7 +8,7 @@ const OnlineGamePage = ({ socket, room, playerName, otherPlayer, turn, setTurn, 
 
   // const [activs, setActivs] = useState(new Array(15).fill(true));
   const [toRem, setToRem] = useState(new Array(15).fill(false));
-  const [player, setPlayer] = useState(playerName);
+  const [player, setPlayer] = useState('');
   const [activeGame, setActiveGame] = useState(true);
   const [computerEndedTurn, setComputerEndedTurn] = useState(false);
 
@@ -20,7 +20,7 @@ const OnlineGamePage = ({ socket, room, playerName, otherPlayer, turn, setTurn, 
       setActiveGame(false);
     }
     else {
-      setPlayer(player == playerName ? otherPlayer : playerName);
+      setPlayer(turn ? playerName : otherPlayer);
     }
   },[activs])
 
@@ -99,7 +99,7 @@ const OnlineGamePage = ({ socket, room, playerName, otherPlayer, turn, setTurn, 
         </h1> :
         <div>
           <h1 className="text-3xl font-bold text-white font-mono">
-            {player + " just lost the game!! :("}
+            {player + " just lost the game!" + (player === playerName ? " Better luck next time!" : " You win!!")}
           </h1>
           <button className={"text-white font-bold py-2 px-4 border rounded bg-green-500"}
             onClick={() => resetGame()}>
@@ -108,18 +108,22 @@ const OnlineGamePage = ({ socket, room, playerName, otherPlayer, turn, setTurn, 
         </div>
       }
       <div className='grid place-items-center'>
-        <div className='box-content h-96 w-[32rem] p-4 border-4 rounded-lg'>
-          <Board activs={activs} toggleRemovalState={i => toggleRemovalState(i)} isValidMove={i => isValidMove(i)}/>
+        <div className="relative">
+          {turn && <button className={"absolute top-[1px] left-[188px] text-white font-bold py-2 px-4 border border-violet-200 rounded-tr-2xl rounded-bl-2xl bg-yellow-500"}
+            onClick={() => endTurn()}>
+            {"End Turn"}
+          </button>}
+        </div>
+        <div className='box-content h-96 w-[32rem] bg-indigo-800 border-2 border-violet-200 rounded-2xl'>
+          <div className='p-4'>
+            <Board activs={activs} toggleRemovalState={i => toggleRemovalState(i)} isValidMove={i => isValidMove(i)}/>
+          </div>
+        </div>
+        <div className='w-[32rem] pt-5'>
+          <InfoCard playerName={playerName} otherPlayer={otherPlayer} room={room} turn={turn}/>
         </div>
       </div>
       <div className="py-6 grid place-items-center">
-        {turn && <button className={"text-white font-bold py-2 px-4 border rounded bg-yellow-500"}
-          onClick={() => endTurn()}>
-          {"Done Playing"}
-        </button>}
-        <div className='w-[32rem]'>
-          <InfoCard playerName={playerName} otherPlayer={otherPlayer} room={room}/>
-        </div>
         <img className='w-72 h-[9.5rem]' src={microbe1}
         onMouseOver={e => (e.currentTarget.src = microbe2)}
         onMouseOut={e => (e.currentTarget.src = microbe1)}/>
