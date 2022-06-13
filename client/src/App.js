@@ -7,7 +7,7 @@ import OnlineMatchUpPage from './components/OnlineMatchUpPage';
 
 function App() {
   return (
-    <div className="App bg-indigo-900 bg-fixed h-100">
+    <div className="App bg-indigo-900 bg-fixed min-h-screen">
       <BrowserRouter>
         {/* <Navbar setSearchKey={setSearchKey} setSearchTerm={setSearchTerm}/> */}
         <Routes>

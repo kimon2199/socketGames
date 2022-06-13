@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Board from './Board';
-import InfoCard from './InfoCard';
+import InfoCardOnline from './InfoCardOnline';
 
 const OnlineGamePage = ({ socket, room, playerName, otherPlayer, turn, setTurn, activs, setActivs }) => {
 
@@ -102,20 +102,21 @@ const OnlineGamePage = ({ socket, room, playerName, otherPlayer, turn, setTurn, 
         </div>
         <div className='box-content h-96 w-[32rem] bg-indigo-800 border-2 border-violet-200 rounded-2xl'>
           { activeGame ? <div className='p-4'>
-            <Board activs={activs} toggleRemovalState={i => toggleRemovalState(i)} isValidMove={i => isValidMove(i)} turn={turn}/>
-          </div> :
-          <div>
-            <h1 className="text-3xl font-bold text-white font-mono">
-              {player + " just lost the game!" + (player === playerName ? " Better luck next time!" : " You win!!")}
-            </h1>
-            <button className={"text-white font-bold py-2 px-4 border rounded bg-green-500"}
-              onClick={() => resetGame()}>
-              {"Replay"}
-            </button>
-          </div>}
+              <Board activs={activs} toggleRemovalState={i => toggleRemovalState(i)} isValidMove={i => isValidMove(i)} turn={turn}/>
+            </div> :
+            <div>
+              <h1 className="text-3xl font-bold text-white font-mono">
+                {player + " just lost the game!" + (player === playerName ? " Better luck next time!" : " You win!!")}
+              </h1>
+              <button className={"text-white font-bold py-2 px-4 border rounded bg-green-500"}
+                onClick={() => resetGame()}>
+                {"Replay"}
+              </button>
+            </div>
+          }
         </div>
         <div className='w-[32rem] pt-5 pb-10'>
-          <InfoCard playerName={playerName} otherPlayer={otherPlayer} room={room} turn={turn}/>
+          <InfoCardOnline playerName={playerName} otherPlayer={otherPlayer} room={room} turn={turn}/>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 
-const InfoCard = ({ playerName, otherPlayer, room, turn }) => {
+const InfoCardOnline = ({ playerName, otherPlayer, room, turn }) => {
 
   const commonStyles = 'min-h-[70px] flex justify-center items-center border-2 border-violet-200 text-sm font-light text-violet-200';
 
@@ -37,4 +37,4 @@ const InfoCard = ({ playerName, otherPlayer, room, turn }) => {
   );
 }
     
-export default InfoCard;
+export default InfoCardOnline;
