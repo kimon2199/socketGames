@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import Board from './Board';
-import microbe1 from'../microbe1.png';
-import microbe2 from'../microbe2.png';
+import InfoCardLocal from './InfoCardLocal';
 
 const AiPage = () => {
 
+  const player1 = "Player 1";
+  const player2 = "Computer";
+
   const [activs, setActivs] = useState(new Array(15).fill(true));
   const [toRem, setToRem] = useState(new Array(15).fill(false));
-  const [player, setPlayer] = useState("Player 1");
+  const [player, setPlayer] = useState("");
   const [activeGame, setActiveGame] = useState(true);
   const [computerEndedTurn, setComputerEndedTurn] = useState(false);
 
@@ -19,7 +21,7 @@ const AiPage = () => {
       setActiveGame(false);
     }
     else {
-      setPlayer(player == 'Player 1' ? 'Computer' : 'Player 1');
+      setPlayer(player == player1 ? player2 : player1);
     }
   },[activs])
 
@@ -100,36 +102,32 @@ const AiPage = () => {
 
   return(
     <div className="">
-      { activeGame &&
-        <h1 className="text-3xl font-bold text-white font-mono py-4">
-          {"It's " + player + "'s turn"}
-        </h1>
-      }
-      { !activeGame &&
-        <div>
-          <h1 className="text-3xl font-bold text-white font-mono">
-            {player + " just lost the game!! :("}
-          </h1>
-          <button className={"text-white font-bold py-2 px-4 border rounded bg-green-500"}
-            onClick={() => resetGame()}>
-            {"Replay"}
-          </button>
+      <div className='grid place-items-center pt-5'>
+        <div className="relative">
+          {(player === player1) && activeGame && <button className={"absolute top-[1px] left-[188px] text-white font-bold py-2 px-4 border border-violet-200 rounded-tr-2xl rounded-bl-2xl bg-yellow-500"}
+            onClick={() => endTurn()}>
+            {"End Turn"}
+          </button>}
         </div>
-      }
-      <div className='grid place-items-center'>
-        <div className='box-content h-96 w-[32rem] p-4 border-4 rounded-lg'>
-          <Board activs={activs} toggleRemovalState={i => toggleRemovalState(i)} isValidMove={i => isValidMove(i)}/>
+        <div className='box-content h-96 w-[32rem] bg-indigo-800 border-2 border-violet-200 rounded-2xl'>
+          { activeGame ? <div className='p-4'>
+              <Board activs={activs} toggleRemovalState={i => toggleRemovalState(i)} isValidMove={i => isValidMove(i)} turn={player === player1}/>
+            </div> :
+            <div>
+              <h1 className="text-3xl font-bold text-white font-mono">
+                {player + " just lost the game!" + (player === player1 ? " Better luck next time!" : " You win!!")}
+              </h1>
+              <button className={"text-white font-bold py-2 px-4 border rounded bg-green-500"}
+                onClick={() => resetGame()}>
+                {"Replay"}
+              </button>
+            </div>
+          }
+        </div>
+        <div className='w-[32rem] pt-5 pb-10'>
+          <InfoCardLocal player1={player1} player2={player2} turn={player === player1}/>
         </div>
       </div>
-      <div className="py-6 grid place-items-center">
-        <button className={"text-white font-bold py-2 px-4 border rounded bg-yellow-500"}
-          onClick={() => endTurn()}>
-          {"Done Playing"}
-        </button>
-        <img className='w-72 h-[9.5rem]' src={microbe1}
-        onMouseOver={e => (e.currentTarget.src = microbe2)}
-        onMouseOut={e => (e.currentTarget.src = microbe1)}/>
-    </div>
     </div>
   );
   }

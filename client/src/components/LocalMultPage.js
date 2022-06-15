@@ -9,7 +9,7 @@ const LocalMultPage = () => {
 
   const [activs, setActivs] = useState(new Array(15).fill(true));
   const [toRem, setToRem] = useState(new Array(15).fill(false));
-  const [player, setPlayer] = useState(player1);
+  const [player, setPlayer] = useState(player2);
   const [activeGame, setActiveGame] = useState(true);
 
   const arrayAnd = (a, b) => a.map((k, i) => k && b[i]);
